@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-Powered Student Study Planner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">✦</span><div><strong>StudyFlow</strong><small>AI STUDY PLANNER</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav-item active" data-view="dashboard"><span>▦</span> Dashboard</button>
+    <button class="nav-item" data-view="subjects"><span>▤</span> Subjects</button>
+    <button class="nav-item" data-view="analytics"><span>◔</span> Analytics</button>
+    <button class="nav-item" data-view="kaggle"><span>▥</span> Kaggle Data</button>
+    <div class="sidebar-bottom"><div class="avatar">SP</div><div><strong>Student Profile</strong><small>Keep learning every day</small></div></div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar"><div><div class="eyebrow">YOUR PERSONAL LEARNING SPACE</div><h1 id="page-title">Dashboard</h1></div><div class="top-date" id="today-date"></div></header>
+    <section class="view active" id="dashboard-view">
+      <div class="welcome-row"><div><h2>Good to see you! <span>✦</span></h2><p>Small steps today lead to big results tomorrow.</p></div><button class="primary-btn" id="add-task-shortcut">＋ Add study task</button></div>
+      <div class="metrics-grid">
+        <article class="metric-card"><div class="metric-top"><span>Total Study Time</span><span class="metric-icon purple">◷</span></div><div class="metric-value"><span id="total-hours">0</span><small>hrs</small></div><div class="metric-note">Completed study sessions</div></article>
+        <article class="metric-card"><div class="metric-top"><span>Average Mastery</span><span class="metric-icon green">✧</span></div><div class="metric-value"><span id="avg-mastery">0</span><small>%</small></div><div class="progress-track"><div id="mastery-bar" class="progress-fill green-fill"></div></div></article>
+        <article class="metric-card"><div class="metric-top"><span>Today's Progress</span><span class="metric-icon orange">◴</span></div><div class="metric-value"><span id="today-progress">0</span><small>%</small></div><div class="progress-track"><div id="today-bar" class="progress-fill orange-fill"></div></div></article>
+        <article class="metric-card"><div class="metric-top"><span>Subjects</span><span class="metric-icon pink">▤</span></div><div class="metric-value"><span id="subject-count">0</span></div><div class="metric-note">Subjects in your study plan</div></article>
+      </div>
+      <div class="dashboard-columns">
+        <section class="panel plan-panel"><div class="panel-heading"><div><h3>Today's Plan</h3><p>Your next steps, one session at a time.</p></div><button class="text-btn" data-go="subjects">Manage subjects ↗</button></div><div id="today-task-list" class="task-list"></div></section>
+        <section class="panel attention-panel"><div class="panel-heading"><div><h3>Needs Attention</h3><p>Give these subjects a little extra focus.</p></div><span class="attention-symbol">!</span></div><div id="attention-list" class="attention-list"></div><div class="tip-box"><span>✦</span><div><strong>Study tip</strong><p>Try a focused 25-minute session, then take a short break.</p></div></div></section>
+      </div>
+      <section class="panel task-form-panel" id="task-form-panel"><div class="panel-heading"><div><h3>Add a study task</h3><p>Plan a session and track completion.</p></div></div>
+        <form id="task-form" class="form-grid"><label class="wide">Task title<input name="title" required maxlength="120" placeholder="e.g. Revise calculus notes"></label><label>Subject<select name="subject_id" id="task-subject"></select></label><label>Date<input type="date" name="task_date" id="task-date" required></label><label>Duration (minutes)<input type="number" name="duration_minutes" min="1" max="1440" value="30" required></label><label>Priority<select name="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label><div class="wide form-actions"><button class="primary-btn" type="submit">Save task</button><span id="task-form-message" class="form-message"></span></div></form>
+      </section>
+    </section>
+    <section class="view" id="subjects-view"><div class="section-intro"><div><h2>Your Subjects</h2><p>Add and update subjects, target hours and mastery.</p></div></div><div class="panel"><form id="subject-form" class="form-grid"><label>Subject name<input name="name" required maxlength="80" placeholder="e.g. Biology"></label><label>Target hours<input name="target_hours" type="number" min="0.1" step="0.1" value="3" required></label><label>Mastery (%)<input name="mastery" type="number" min="0" max="100" value="50" required></label><label>Color<input name="color" type="color" value="#7968f5"></label><div class="wide form-actions"><button class="primary-btn">＋ Add subject</button><span id="subject-form-message" class="form-message"></span></div></form></div><div id="subjects-grid" class="subjects-grid"></div></section>
+    <section class="view" id="analytics-view"><div class="section-intro"><div><h2>Learning Analytics</h2><p>A quick overview of your subjects and study tasks.</p></div></div><div class="metrics-grid analytics-metrics"><article class="metric-card"><div class="metric-top"><span>Tracked tasks</span><span class="metric-icon purple">✓</span></div><div class="metric-value" id="analytics-task-count">0</div></article><article class="metric-card"><div class="metric-top"><span>Completed tasks</span><span class="metric-icon green">✓</span></div><div class="metric-value" id="analytics-completed-count">0</div></article></div><div class="panel"><h3>Mastery by subject</h3><div id="mastery-chart" class="bar-chart"></div></div></section>
+    <section class="view" id="kaggle-view"><div class="section-intro"><div><h2>Kaggle Dataset</h2><p>Explore the public student performance dataset alongside your own planner.</p></div><button class="secondary-btn" id="refresh-kaggle">↻ Refresh data</button></div><div id="kaggle-status" class="panel status-panel">Loading dataset information…</div><div id="kaggle-summary" class="metrics-grid"></div><div class="panel"><div class="panel-heading"><div><h3>Dataset preview</h3><p>First eight records from your CSV.</p></div></div><div class="table-wrap"><table id="kaggle-table"></table></div></div></section>
+  </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
